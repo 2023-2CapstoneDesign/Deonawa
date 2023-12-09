@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['product_discount_price', 'product_name', 'product_original_price']
+
+roboflow:
+  workspace: yeonu-heo-lghpw
+  project: deonawa
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/yeonu-heo-lghpw/deonawa/dataset/3

@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from pathlib import Path
 
-
+# https://public.roboflow.com/object-detection/website-screenshots
 # Function to crop and save detected elements
 def crop_and_save(product_name,img, box, label, save_dir='cropped_elements'):
     x1, y1, x2, y2 = map(int, box)
