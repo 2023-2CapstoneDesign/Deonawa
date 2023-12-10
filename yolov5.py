@@ -21,7 +21,7 @@ def crop_and_save(product_name,img, box, label, save_dir='cropped_elements'):
 def apply_ocr(image_path):
     img = cv2.imread(image_path)
     rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    text = pytesseract.image_to_string(rgb_image, lang='kor+eng')
+    text = pytesseract.image_to_string(rgb_image, lang='kor')
     return text
 
 # Function to process a directory of images
@@ -29,6 +29,7 @@ def process_directory(directory):
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='/Users/yeonu/PycharmProjects/Deonawa/yolov5s.pt', force_reload=True)
 
     for img_file in Path(directory).rglob('*.png'):  # Assuming all images are PNG
+        print(f"Processing image: {img_file}")
         img = Image.open(img_file)
         img_cv = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
 
@@ -41,7 +42,7 @@ def process_directory(directory):
             # Extract only the product name without the path
             product_name = str(img_file).split('/')[-1]
             product_name = product_name.replace(".png", "")
-            cropped_image_path = crop_and_save(product_name,img_cv, (x1, y1, x2, y2), label)
+            cropped_image_path = crop_and_save(product_name, img_cv, (x1, y1, x2, y2), label)
 
             ocr_text = apply_ocr(cropped_image_path)
             print(f"OCR result for {label}: {ocr_text}")
