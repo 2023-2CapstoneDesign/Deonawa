@@ -72,7 +72,6 @@ def process_directory(directory):
 
             # Extract only the product name without any path information
             product_name = Path(img_file).stem  # This extracts the filename without extension
-            print(product_name)
             # Adapt crop_and_save for Roboflow predictions
             # Adjust the offset values based on your requirements
             x_offset = 80  # Adjust as needed
