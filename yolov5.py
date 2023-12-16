@@ -82,9 +82,44 @@ def process_directory(directory):
             #cropped_image_path = crop_and_save(product_name, img_cv, (x, y, x + width, y + height), label)
 
             ocr_text = apply_ocr(cropped_image_path)
-            print(f"OCR result for {label}: {ocr_text}") 
+            print(f"OCR result for {label}: {ocr_text}")
+
+             # Extract product data and column name from the file name
+            product_data, column_name = extract_and_process_file_names(img_file.name)
+
+            # Store OCR text in the database under the correct column
+            if product_data:
+                store_product_data_in_db(product_data[0], ocr_text, column_name, db_connection, db_cursor)
+
+# Function to insert OCR text into the specified column in the database
+def store_product_data_in_db(product_data, ocr_text, column_name, db_connection, db_cursor):
+    query = f"INSERT INTO Product (product_name, {column_name}) VALUES (%s, %s, %s, %s)"
+    db_cursor.execute(query, (*product_data, ocr_text))
+    db_connection.commit()     
+
+# Function to extract product data and column name from file names
+def extract_and_process_file_names(file_name):
+    # Assuming the format is product_name_column_name.png
+    parts = Path(file_name).stem.split('_')
+    product_name = parts[0]
+    column_name = parts[-1]  # Takes the last part as the column name
+    # Assuming other product data extraction logic here
+    return product_data, column_name
+
+
+# Database connection setup
+db_connection = mysql.connector.connect(
+    host="your_host",
+    user="your_username",
+    password="your_password",
+    database="your_database"
+)
+db_cursor = db_connection.cursor()
 
 # Replace this with your actual images directory path
 images_directory = 'images'
+process_directory(images_directory, db_connection, db_cursor)
 
-process_directory(images_directory)
+# Close the database connection
+db_cursor.close()
+db_connection.close()
